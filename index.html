@@ -1,76 +1,115 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>FLAMES Game</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      h1 {
-        text-align: center;
-      }
-      form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      label {
-        margin-top: 10px;
-      }
-      input[type="text"] {
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      input[type="submit"] {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 10px;
-      }
-      .result {
-        margin-top: 20px;
-        font-size: 20px;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>FLAMES Game</h1>
-      <form>
-        <label for="name1">Enter the first name:</label>
-        <input type="text" id="name1" name="name1" required>
-        <label for="name2">Enter the second name:</label>
-        <input type="text" id="name2" name="name2" required>
-        <input type="submit" value="Play">
-      </form>
-      <div class="result">
-        <?php
-        if (isset($_GET['name1']) && isset($_GET['name2'])) {
-          $name1 = $_GET['name1'];
-          $name2 = $_GET['name2'];
-          $result = flames($name1, $name2);
-          echo "The relationship between " . ucfirst($name1) . " and " . ucfirst($name2) . " is: " . $result;
+<head>
+	<title>FLAMES Game</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+			padding: 20px;
+		}
+
+		h1 {
+			text-align: center;
+			color: #333;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.2);
+			margin: 20px auto;
+			max-width: 600px;
+		}
+
+		input {
+			padding: 10px;
+			margin: 10px;
+			border-radius: 5px;
+			border: none;
+			box-shadow: 0 0 5px rgba(0,0,0,0.2);
+		}
+
+		button {
+			padding: 10px;
+			margin: 10px;
+			border-radius: 5px;
+			border: none;
+			background-color: #333;
+			color: #fff;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		button:hover {
+			background-color: #555;
+		}
+
+		p {
+			margin-top: 20px;
+			font-size: 18px;
+			font-weight: bold;
+			text-align: center;
+			color: #333;
+			text-transform: capitalize;
+		}
+	</style>
+</head>
+<body>
+	<h1>FLAMES Game</h1>
+	<form>
+		<label for="name1">Enter the first name:</label>
+		<input type="text" id="name1" name="name1" required>
+		<label for="name2">Enter the second name:</label>
+		<input type="text" id="name2" name="name2" required>
+		<button type="button" onclick="play()">Play</button>
+	</form>
+	<p id="result"></p>
+
+	<script>
+		function flames(name1, name2) {
+		    name1 = name1.toLowerCase();
+		    name2 = name2.toLowerCase();
+
+		    // Remove common characters
+		    for (char of name1) {
+		        if (name2.includes(char)) {
+		            name1 = name1.replace(char, '');
+		            name2 = name2.replace(char, '');
+		        }
+		    }
+
+		    // Calculate the length of the remaining letters
+		    const count = name1.length + name2.length;
+
+		    // Determine the relationship based on the FLAMES acronym
+		    let result = '';
+		    let flames = ['Friends', 'Love', 'Affection', 'Marriage', 'Enemy', 'Sister'];
+		    while (flames.length > 1) {
+		        let index = (count % flames.length) - 1;
+		        if (index >= 0) {
+		            flames = flames.slice(index + 1).concat(flames.slice(0, index));
+		        } else {
+		            flames = flames.slice(0, -1);
+		        }
+		    }
+		    result = flames[0];
+
+		    return result;
+		}
+
+		function play() {
+			const name1 = document.getElementById('name1').value;
+			const name2 = document.getElementById('name2').value;
+            
+			const result = flames(name1, name2);
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = `${name1} and ${name2} are ${result}`;
         }
-        ?>
-      </div>
-    </div>
-  </body>
+	</script>
+</body>
 </html>
